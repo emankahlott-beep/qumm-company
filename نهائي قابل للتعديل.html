@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>شركة القمم للاستيراد والتسويق | لوحة تحكم المالك</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;400&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Tajawal', Arial, sans-serif;
+      margin: 0;
+      background: #f8eaea;
+      min-height: 100vh;
+      background-image: radial-gradient(circle at 70% 20%, #fff7 0 25%, #f8eaea 70%);
+      overflow-x: hidden;
+    }
+    /* الشريط العلوي */
+    .navbar-owner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      background: #fff;
+      border-bottom: 2.5px solid #82000028;
+      margin-bottom: 18px;
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 6;
+    }
+    .navbar-owner .nav-link {
+      color: #820000;
+      font-weight: bold;
+      font-size: 1.13rem;
+      background: none;
+      border: none;
+      padding: 18px 22px 14px 22px;
+      cursor: pointer;
+      border-bottom: 2.5px solid transparent;
+      transition: border 0.18s, background 0.16s, color 0.13s;
+    }
+    .navbar-owner .nav-link.selected,
+    .navbar-owner .nav-link:focus {
+      border-bottom: 2.5px solid #c62828;
+      color: #c62828;
+      background: #fbecec;
+    }
+    .navbar-owner .nav-link.logout {
+      margin-right:0;margin-left:auto;background:#c62828;color:#fff;border-radius:0 0 0 12px;border:none;padding:12px 23px;
+    }
+    .navbar-owner .nav-link.logout:hover {background:#ad1f1f;}
+    /* الهيدر */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 22px 0 12px 0;
+      position: relative;
+    }
+    .user-avatar {
+      width: 58px; height: 58px;
+      border-radius: 50%;
+      background: #c62828;
+      color: #fff;
+      font-size: 2.1rem;
+      font-weight: bold;
+      box-shadow: 0 2px 15px #82000044;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 18px;
+      object-fit: cover;
+      border: 2.5px solid #fff;
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+    }
+    .header .profile-btn {
+      position: absolute;
+      right: 45px;
+      top: 12px;
+      background: #fff;
+      color: #820000;
+      border: 1.5px solid #82000050;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 1.08rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.1s, color 0.1s;
+    }
+    .header .profile-btn:hover {background: #fbecec; color: #c62828;}
+    .center-title {
+      flex: 1;
+      text-align: center;
+      font-size: 2.3rem;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      color: #820000;
+      text-shadow: 0 2px 13px #fff8;
+      margin-right: 85px;
+    }
+    /* البطاقات */
+    .cards-row {
+      display: flex;
+      gap: 22px;
+      margin: 0 0 22px 0;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .card {
+      flex: 1 0 230px;
+      min-width: 220px;
+      background: #fff;
+      border-radius: 19px;
+      box-shadow: 0 4px 18px #82000017;
+      padding: 25px 20px 19px 20px;
+      text-align: center;
+      margin: 9px 8px 0 8px;
+      position: relative;
+      transition: box-shadow 0.18s;
+    }
+    .card .label {
+      color: #820000;
+      margin-bottom: 9px;
+      font-weight: bold;
+      font-size: 1.07rem;
+    }
+    .card .value {
+      font-size: 2.3rem;
+      font-weight: bold;
+      color: #c62828;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+      transition: color 0.2s;
+      direction: ltr;
+    }
+    .card .add-btn {
+      background:#820000;
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      font-size:1.08rem;
+      font-weight:bold;
+      margin-top:16px;
+      padding:10px 18px;
+      cursor:pointer;
+      transition:background 0.17s;
+      box-shadow:0 1px 4px #c6282844;
+    }
+    .card .add-btn:hover {background:#c62828;}
+    /* الجدول */
+    .table-block {
+      background:#fff;
+      border-radius:13px;
+      box-shadow:0 2px 13px #82000013;
+      padding:21px 7px 10px 7px;
+      margin: 0 25px 30px 25px;
+      overflow-x:auto;
+      max-width:98vw;
+    }
+    .table-block table {width:100%;border-collapse:collapse;}
+    .table-block th,.table-block td {
+      padding:13px 10px;
+      border-bottom:1.5px solid #efd7d7;
+      font-size:1.08rem;
+      text-align:center;
+    }
+    .table-block th {background:#f8eaea;color:#820000;font-weight:bold;}
+    .table-block td {color:#c62828;}
+    .founder-btn {
+      background:#1976d2;
+      color:#fff;
+      border:none;
+      border-radius:6px;
+      padding:6px 13px;
+      font-size:0.97rem;
+      cursor:pointer;
+      margin:0 2px;
+      transition:background 0.14s;
+    }
+    .founder-btn.edit {background:#c62828;}
+    .founder-btn.del {background:#222;}
+    .founder-btn:hover {filter:brightness(.93);}
+    /* نافذة ملفي الشخصي */
+    .modal-bg {
+      position:fixed;inset:0;z-index:20;background:#0006;display:flex;align-items:center;justify-content:center;
+    }
+    .profile-modal {
+      background:#fff;
+      min-width:315px;
+      border-radius:16px;
+      box-shadow:0 7px 38px #82000022;
+      padding:30px 19px 16px 19px;
+      position:relative;
+      text-align:right;
+    }
+    .profile-modal .close-btn {
+      background:none;
+      border:none;
+      color:#c62828;
+      position:absolute;
+      top:8px;left:9px;
+      font-size:1.2rem;font-weight:bold;cursor:pointer;
+    }
+    .profile-modal label {font-weight:bold;margin:13px 0 5px 0;color:#820000;display:block;}
+    .profile-modal input[type="text"], .profile-modal input[type="email"], .profile-modal input[type="password"], .profile-modal input[type="tel"] {
+      width:97%;padding:8px 7px;border-radius:7px;border:1.2px solid #eee;margin-bottom:7px;
+    }
+    .profile-modal .save-btn {
+      background:#820000;color:#fff;border:none;border-radius:7px;padding:8px 16px;margin-top:14px;cursor:pointer;width:100%;font-weight:bold;
+    }
+    .profile-modal .save-btn:hover {background:#c62828;}
+    .profile-modal .avatar-upload {margin:0 0 12px 0;text-align:center;}
+    .profile-modal .avatar-preview {
+      width:65px;height:65px;border-radius:50%;background:#f8eaea;display:inline-flex;align-items:center;justify-content:center;font-size:2.2rem;color:#820000;margin-bottom:8px;object-fit:cover;box-shadow:0 1px 7px #82000022;
+      border:2px solid #82000033;
+      overflow:hidden;
+    }
+    .profile-modal .avatar-upload input[type="file"] {display:none;}
+    .profile-modal .avatar-edit-btn {
+      background:#f8eaea;border:none;border-radius:7px;padding:5px 12px;cursor:pointer;color:#820000;font-size:0.98rem;font-weight:bold;margin-top:7px;
+    }
+    /* 2FA */
+    .modal-bg-2fa {position:fixed;inset:0;z-index:99;background:#0006;display:flex;align-items:center;justify-content:center;}
+    .modal-2fa {background:#fff;padding:28px 22px 20px 22px;border-radius:15px;box-shadow:0 4px 28px #82000044;min-width:250px;text-align:center;}
+    /* المؤسس: هيدر أبسط بدون شريط */
+    .header-founder {display: flex; align-items: center; justify-content: center; margin: 35px 0 10px 0; position: relative;}
+    .header-founder .user-avatar {margin-left: 15px;}
+    .header-founder .center-title {margin-right: 60px; font-size: 2.1rem;}
+    /* المؤسس: بطاقات */
+    .cards-row-founder {display: flex; gap: 22px; margin: 0 0 22px 0; justify-content: center; flex-wrap: wrap;}
+    /* Responsive */
+    @media (max-width:1100px) {
+      .cards-row, .cards-row-founder {flex-direction:column;align-items:center;}
+      .card {min-width:180px;}
+    }
+    @media (max-width:600px) {
+      .navbar-owner .nav-link {padding:10px 9px;font-size:1.01rem;}
+      .header, .header-founder {flex-direction:column;gap:10px;margin:16px 0;}
+      .center-title {font-size:1.1rem;margin:0;}
+      .table-block {margin:0 1vw 18px 1vw;padding:9px 2px;}
+      .card {padding:13px 5px;}
+      .header .profile-btn, .header-founder .profile-btn {position:static;margin-top:7px;}
+    }
+    .hidden {display:none!important;}
+
+    /* صفحة تسجيل الدخول الجديدة */
+    #login-page {min-height:100vh;display:flex;align-items:center;justify-content:center;}
+    .login-3d-card {
+      background: #fff;
+      border-radius: 33px;
+      box-shadow: 0 12px 45px #82000044, 0 2px 14px #fff8;
+      padding: 40px 32px 28px 32px;
+      position:relative;
+      width: 380px;
+      margin: 50px auto;
+      perspective: 900px;
+      transform-style: preserve-3d;
+      transition: box-shadow 0.2s, transform 0.3s;
+      z-index:1;
+    }
+    .login-3d-card:active, .login-3d-card:focus-within {
+      box-shadow: 0 26px 80px #c6282877, 0 2px 22px #fff8;
+      transform: rotateY(-8deg) scale(1.03);
+    }
+    .login-glow {
+      position:absolute;top:-30px;left:-30px;
+      width:340px;height:180px;
+      background:radial-gradient(circle,#c6282885 0%,#fff1 70%,#f8eaea00 100%);
+      filter: blur(22px);
+      opacity:0.8;
+      z-index:0;
+    }
+    .login-logo-3d {
+      width:69px;height:69px;margin:auto;background:linear-gradient(120deg,#fff 60%,#f8eaea 100%);
+      border-radius:50%;box-shadow:0 0 0 5px #c6282842;display:flex;align-items:center;justify-content:center;
+      font-size:2.7rem;color:#c62828;margin-bottom:12px;
+    }
+    .login-title-3d {
+      font-size:1.51rem;font-weight:bold;color:#820000;margin-bottom:17px;letter-spacing:1px;text-shadow:0 1px 8px #fff6,0 2px 13px #82000022;
+    }
+    #login-form input, #login-form select {
+      width: 100%;padding: 12px 14px;margin: 8px 0;
+      border-radius: 11px;border: 1.7px solid #eee;font-size: 1.11rem;background: #f8fafd;
+      box-shadow: 0 1px 5px #82000010;
+      transition: border 0.14s, background 0.14s;
+    }
+    #login-form input:focus, #login-form select:focus {border:2px solid #820000;background:#fff;}
+    .login-btn-3d {
+      width: 100%;background: linear-gradient(90deg,#820000 40%,#c62828 100%);
+      color: #fff;border: none;border-radius: 13px;font-size: 1.19rem;font-weight: bold;margin-top: 12px;padding: 13px 0;cursor: pointer;
+      box-shadow: 0 2px 12px #82000033;transition:filter 0.13s,box-shadow 0.13s,transform 0.14s;letter-spacing:1px;
+    }
+    .login-btn-3d:active {filter:brightness(.93);}
+    .login-btn-3d-outline {
+      width: 100%;background: #fff;color: #820000;border: 2px solid #820000;margin-top: 15px;
+      border-radius: 13px;font-size: 1rem;font-weight: bold;padding: 12px 0;cursor: pointer;transition:background 0.11s,color 0.11s;
+    }
+    .login-btn-3d-outline:hover {background:#820000;color:#fff;}
+    .social-btn {
+      padding:8px 16px;border:none;border-radius:8px;margin:2px 2px;font-size:1rem;cursor:pointer;font-weight:bold;box-shadow:0 1px 4px #82000011;transition:background 0.11s;
+      background:#f5f5f5;color:#444;display:inline-flex;align-items:center;
+    }
+    .social-btn.google {background:#fff;color:#222;border:1px solid #ddd;}
+    .social-btn.facebook {background:#1976d2;color:#fff;}
+    .social-btn.google:hover {background:#f8eaea;}
+    .social-btn.facebook:hover {background:#1257a3;}
+    @media (max-width:500px){
+      .login-3d-card{width:99vw;padding:19px 5px;}
+    }
+  </style>
+</head>
+<body>
+<!-- صفحة تسجيل الدخول الجديدة -->
+<div id="login-page">
+  <div class="login-3d-card">
+    <div class="login-glow"></div>
+    <div style="text-align:center;">
+      <div class="login-logo-3d">💼</div>
+      <div class="login-title-3d">شركة القمم للاستيراد والتسويق</div>
+    </div>
+    <form id="login-form" autocomplete="off">
+      <input type="email" id="login-email" placeholder="البريد الإلكتروني" required>
+      <input type="password" id="login-pass" placeholder="كلمة المرور" required>
+      <select id="login-type">
+        <option value="owner">مالك الشركة</option>
+        <option value="founder">مؤسس</option>
+      </select>
+      <button class="login-btn-3d" type="submit">تسجيل الدخول</button>
+    </form>
+    <div id="social-login-block" style="margin-top:10px;">
+      <div style="margin:8px 0 4px 0;font-weight:bold;color:#820000;font-size:1.09rem;">أو دخول المؤسس عبر</div>
+      <button class="social-btn google" onclick="fakeSocialLogin('Google')"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" width="19" style="vertical-align:middle;margin-left:6px;"> Google</button>
+      <button class="social-btn facebook" onclick="fakeSocialLogin('Facebook')"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/facebook/facebook-original.svg" width="17" style="vertical-align:middle;margin-left:6px;"> Facebook</button>
+    </div>
+    <button class="login-btn-3d-outline" type="button" onclick="showAddFounder()">تسجيل مؤسس جديد</button>
+    <div style="color:#c62828;text-align:center;font-size:1.13rem;font-weight:bold;margin-top:16px;">✦•| هــذا مــن فـضـل ربـي |•✦</div>
+  </div>
+</div>
+<!-- نافذة 2FA -->
+<div class="modal-bg-2fa hidden" id="modal-2fa">
+  <div class="modal-2fa">
+    <div style="font-weight:bold;color:#820000;font-size:1.13rem;margin-bottom:10px;">المصادقة الثنائية</div>
+    <div id="2fa-msg"></div>
+    <input type="text" id="input-2fa" maxlength="6" autocomplete="off" placeholder="أدخل الكود">
+    <button class="card add-btn" style="width:100%;margin:15px 0 0 0;" onclick="check2FA()">تأكيد الدخول</button>
+  </div>
+</div>
+<!-- نافذة تسجيل مؤسس جديد -->
+<div class="modal-bg hidden" id="add-founder-bg">
+  <form class="profile-modal" id="add-founder-form" autocomplete="off" style="min-width:260px;">
+    <button type="button" class="close-btn" onclick="hideAddFounder()">×</button>
+    <div style="font-weight:bold;color:#820000;font-size:1.13rem;margin-bottom:10px;">تسجيل مؤسس جديد</div>
+    <div class="avatar-upload">
+      <label class="avatar-preview" id="add-founder-avatar-preview">+</label>
+      <br>
+      <label class="avatar-edit-btn" for="add-founder-avatar">تغيير الصورة</label>
+      <input type="file" id="add-founder-avatar" accept="image/*">
+    </div>
+    <label>الاسم</label><input type="text" id="add-founder-name" placeholder="اسم المؤسس" required>
+    <label>الإيميل</label><input type="email" id="add-founder-email" placeholder="الإيميل" required>
+    <label>كلمة المرور</label><input type="password" id="add-founder-pass" placeholder="كلمة المرور" required>
+    <label>عدد الأسهم</label><input type="number" id="add-founder-shares" placeholder="عدد الأسهم" min="1" max="400188" required>
+    <div id="founder-share-info" class="info" style="color:#c62828;font-size:1.03rem;margin-bottom:7px;"></div>
+    <button type="submit" class="save-btn">إنشاء الحساب</button>
+  </form>
+</div>
+<!-- ملفي الشخصي (مالك أو مؤسس) -->
+<div class="modal-bg hidden" id="profile-modal-bg">
+  <form class="profile-modal" id="profile-form">
+    <button type="button" class="close-btn" onclick="hideProfile()">×</button>
+    <div style="font-weight:bold;color:#820000;font-size:1.18rem;margin-bottom:14px;">ملفي الشخصي</div>
+    <div class="avatar-upload">
+      <label class="avatar-preview" id="profile-avatar-preview"></label>
+      <br>
+      <label class="avatar-edit-btn" for="profile-avatar">تغيير الصورة</label>
+      <input type="file" id="profile-avatar" accept="image/*">
+    </div>
+    <label>الاسم</label><input type="text" id="profile-name" required>
+    <label>البريد الإلكتروني</label><input type="email" id="profile-email" required>
+    <label>رقم الجوال</label><input type="tel" id="profile-phone">
+    <label>العنوان</label><input type="text" id="profile-address">
+    <label>كلمة المرور الجديدة</label><input type="password" id="profile-pass">
+    <button class="save-btn" type="submit">حفظ التعديلات</button>
+  </form>
+</div>
+<!-- لوحة المالك -->
+<div class="hidden" id="owner-dashboard">
+  <div class="header">
+    <span class="user-avatar" id="owner-avatar"></span>
+    <span class="center-title" id="owner-center-title">مالك الشركة</span>
+    <button class="profile-btn" onclick="showProfile()">ملفي الشخصي</button>
+  </div>
+  <div class="navbar-owner" id="navbar-owner">
+    <button class="nav-link selected" onclick="showOwnerTab('dashboard')">لوحة التحكم</button>
+    <button class="nav-link" onclick="showOwnerTab('users')">المؤسسون</button>
+    <button class="nav-link" onclick="showOwnerTab('transactions')">المعاملات</button>
+    <button class="nav-link" onclick="showOwnerTab('reports')">التقارير</button>
+    <button class="nav-link logout" onclick="logout()">تسجيل الخروج</button>
+  </div>
+  <div id="owner-content"></div>
+</div>
+<!-- لوحة المؤسس -->
+<div class="hidden" id="founder-dashboard">
+  <div class="header-founder">
+    <span class="user-avatar" id="founder-avatar"></span>
+    <span class="center-title" id="founder-center-title"></span>
+    <button class="profile-btn" onclick="showProfile()">ملفي الشخصي</button>
+  </div>
+  <div style="display:flex;justify-content:flex-end;gap:8px;padding:0 32px;">
+    <button class="card add-btn" style="width:auto;padding:7px 16px;margin-top:10px;" onclick="logout()">تسجيل الخروج</button>
+  </div>
+  <div id="founder-content"></div>
+</div>
+<script>
+// ====== بيانات افتراضية ======
+const TOTAL_SHARES = 400000;
+let owner = JSON.parse(localStorage.getItem("owner")||'{"name":"مالك","email":"admin@qumm.com","password":"admin123","phone":"","address":"","avatar":""}');
+let founders = [];
+if(localStorage.getItem("founders")){
+  try { founders = JSON.parse(localStorage.getItem("founders")) || []; } catch(e){}
+}
+let totalProfit = Number(localStorage.getItem("totalProfit")||0);
+let currentUser = {type:'',email:'',name:'',index:-1};
+// ====== صفحة تسجيل الدخول (سوشيال - إضاءة - 3D) ======
+document.getElementById('login-type').addEventListener('change',function(){
+  document.getElementById('social-login-block').style.display = (this.value==='founder')?'block':'none';
+});
+document.getElementById('social-login-block').style.display = (document.getElementById('login-type').value==='founder')?'block':'none';
+function fakeSocialLogin(service){
+  alert("تسجيل دخول تجريبي عبر " + service + ".\n(هنا يمكن ربط تسجيل حقيقي لاحقاً)");
+  // هنا يمكن برمجة تسجيل دخول المؤسس مباشرة لو أردت
+}
+// إشعار المالك بدخول جديد
+let notifyOwnerLogin = function(){
+  localStorage.setItem("notifyOwnerLogin", Date.now()+"");
+};
+// ================== تسجيل الدخول مع 2FA ==================
+let loginSession = {pendingType:null,pendingIndex:null,pendingEmail:null,pendingPass:null};
+document.getElementById('login-form').onsubmit = function(e){
+  e.preventDefault();
+  notifyOwnerLogin();
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const type = document.getElementById('login-type').value;
+  if(!email.match(/.+@.+\..+/)) return alert("أدخل بريد إلكتروني صحيح");
+  if(type==='owner'){
+    if(email===owner.email && pass===owner.password){
+      loginSession={pendingType:'owner',pendingIndex:-1,pendingEmail:email,pendingPass:pass};
+      show2FA();
+    } else {
+      alert("بيانات المالك غير صحيحة!");
+    }
+  } else {
+    let idx = founders.findIndex(f=>f.email===email && f.password === pass);
+    if(idx===-1) return alert('الإيميل أو كلمة المرور غير صحيحة أو لم يتم التسجيل!');
+    loginSession={pendingType:'founder',pendingIndex:idx,pendingEmail:email,pendingPass:pass};
+    show2FA();
+  }
+};
+// ====== مصادقة ثنائية ======
+let current2FA = '';
+function show2FA(){
+  current2FA = (Math.floor(100000+Math.random()*900000)).toString();
+  document.getElementById('modal-2fa').classList.remove('hidden');
+  document.getElementById('2fa-msg').innerHTML = `كود التحقق الخاص بك: <b>${current2FA}</b>`;
+  document.getElementById('input-2fa').value='';
+  setTimeout(()=>{document.getElementById('input-2fa').focus();},200);
+}
+function check2FA(){
+  let code = document.getElementById('input-2fa').value.trim();
+  if(code!==current2FA) return alert("رمز التحقق غير صحيح!");
+  document.getElementById('modal-2fa').classList.add('hidden');
+  document.getElementById('login-page').classList.add('hidden');
+  if(loginSession.pendingType==='owner'){
+    currentUser = {type:'owner',email:owner.email,name:owner.name,index:-1};
+    document.getElementById('owner-dashboard').classList.remove('hidden');
+    showOwnerTab('dashboard');
+    renderOwnerHeader();
+    // شعار إشعار الدخول
+    if(localStorage.getItem("notifyOwnerLogin")){
+      setTimeout(function(){
+        alert("تنبيه: تم تسجيل دخول جديد لأحد المستخدمين.");
+        localStorage.removeItem("notifyOwnerLogin");
+      },800);
+    }
+  }else{
+    let idx=loginSession.pendingIndex;
+    currentUser = {type:'founder',email:founders[idx].email,name:founders[idx].name,index:idx};
+    document.getElementById('founder-dashboard').classList.remove('hidden');
+    renderFounderHeader(idx);
+    renderFounderDashboard(idx);
+  }
+}
+// زر تسجيل خروج للطرفين
+function logout(){
+  currentUser={type:'',email:'',name:'',index:-1};
+  document.getElementById('owner-dashboard').classList.add('hidden');
+  document.getElementById('founder-dashboard').classList.add('hidden');
+  document.getElementById('login-page').classList.remove('hidden');
+  document.getElementById('login-form').reset();
+}
+// ========== إضافة مؤسس جديد ==========
+function showAddFounder(){
+  document.getElementById('add-founder-bg').classList.remove('hidden');
+  document.getElementById('add-founder-form').reset();
+  document.getElementById('founder-share-info').textContent = '';
+  document.getElementById('add-founder-avatar-preview').innerHTML = "+";
+  document.getElementById('add-founder-avatar-preview').style.backgroundImage = "none";
+}
+function hideAddFounder(){
+  document.getElementById('add-founder-bg').classList.add('hidden');
+}
+// صورة المؤسس الجديد
+let addFounderAvatar="";
+document.getElementById('add-founder-avatar').onchange = function(){
+  if(this.files && this.files[0]){
+    let reader = new FileReader();
+    reader.onload = function(e){
+      addFounderAvatar = e.target.result;
+      document.getElementById('add-founder-avatar-preview').style.backgroundImage = `url('${addFounderAvatar}')`;
+      document.getElementById('add-founder-avatar-preview').innerHTML = "";
+    };
+    reader.readAsDataURL(this.files[0]);
+  }
+};
+document.getElementById('add-founder-shares').oninput = function(){
+  let shares = Number(this.value);
+  let percent = shares ? ((shares / TOTAL_SHARES) * 100) : 0;
+  document.getElementById('founder-share-info').textContent =
+    shares ? `النسبة: ${percent.toFixed(4)}%` : '';
+};
+document.getElementById('add-founder-form').onsubmit = function(e){
+  e.preventDefault();
+  let name = document.getElementById('add-founder-name').value.trim();
+  let email = document.getElementById('add-founder-email').value.trim();
+  let pass = document.getElementById('add-founder-pass').value;
+  let shares = Number(document.getElementById('add-founder-shares').value);
+  if(!name||!email||!pass||!shares) return alert("كل الحقول مطلوبة");
+  if(founders.find(f=>f.email===email)) return alert("يوجد مؤسس بنفس الإيميل!");
+  founders.push({name,email,shares,password:pass,profit:0,expenses:[],withdraws:[],phone:'',address:'',avatar:addFounderAvatar||""});
+  saveAll();
+  hideAddFounder();
+  alert("تم إنشاء الحساب بنجاح! يمكنك الدخول الآن.");
+  addFounderAvatar="";
+};
+// ========== حفظ البيانات ==========
+function saveAll(){
+  localStorage.setItem("founders", JSON.stringify(founders));
+  localStorage.setItem("owner", JSON.stringify(owner));
+  localStorage.setItem("totalProfit", totalProfit);
+}
+// ========== واجهة المالك ==========
+function renderOwnerHeader(){
+  document.getElementById('owner-center-title').textContent = owner.name;
+  setAvatar("owner-avatar", owner.avatar, owner.name);
+}
+function setAvatar(elId, avatarData, name){
+  let el = document.getElementById(elId);
+  if(avatarData && avatarData.startsWith("data:")){
+    el.innerHTML = "";
+    el.style.backgroundImage = `url('${avatarData}')`;
+    el.style.backgroundSize = "cover";
+  }else{
+    el.style.backgroundImage = "none";
+    el.innerHTML = name && name.length ? name[0] : "م";
+  }
+}
+function showOwnerTab(tab){
+  // تفعيل الزر المحدد
+  Array.from(document.querySelectorAll('.navbar-owner .nav-link')).forEach(btn=>btn.classList.remove('selected'));
+  if(tab==='dashboard') document.querySelectorAll('.navbar-owner .nav-link')[0].classList.add('selected');
+  if(tab==='users') document.querySelectorAll('.navbar-owner .nav-link')[1].classList.add('selected');
+  if(tab==='transactions') document.querySelectorAll('.navbar-owner .nav-link')[2].classList.add('selected');
+  if(tab==='reports') document.querySelectorAll('.navbar-owner .nav-link')[3].classList.add('selected');
+  if(tab==='dashboard') return renderOwnerDashboard();
+  if(tab==='users') return renderUsersTable();
+  if(tab==='transactions') return renderTransactions();
+  if(tab==='reports') return renderReports();
+}
+function renderOwnerDashboard(){
+  let totalShares = founders.reduce((a,f)=>a+f.shares,0);
+  document.getElementById('owner-content').innerHTML = `
+    <div class="cards-row">
+      <div class="card"><div class="label">إجمالي الأسهم</div><div class="value">${totalShares} / ${TOTAL_SHARES}</div></div>
+      <div class="card"><div class="label">إجمالي الأرباح</div><div class="value">${totalProfit} ر.س</div><button class="add-btn" onclick="showAddProfit()">إضافة أرباح</button></div>
+      <div class="card"><div class="label">عدد المؤسسين</div><div class="value">${founders.length}</div><button class="add-btn" onclick="showAddFounder()">إضافة مؤسس</button></div>
+    </div>
+    <div class="table-block">
+      <div style="font-weight:bold;color:#820000;font-size:1.12rem;margin-bottom:10px;">جدول المؤسسين</div>
+      <table>
+        <tr>
+          <th>الاسم</th><th>الإيميل</th><th>الأسهم</th><th>النسبة</th>
+          <th>الأرباح</th><th>المصروفات</th><th>السحوبات</th><th>كشف الحساب</th>
+        </tr>
+        ${ founders.map((f,i)=>`
+        <tr>
+          <td>${f.name}</td>
+          <td>${f.email}</td>
+          <td>${f.shares}</td>
+          <td>${((f.shares/TOTAL_SHARES)*100).toFixed(4)}%</td>
+          <td>${f.profit||0} ر.س</td>
+          <td>${sumArr(f.expenses)} ر.س</td>
+          <td>${sumArr(f.withdraws)} ر.س</td>
+          <td>
+            <button class="founder-btn" onclick="showFounderStatement(${i})">كشف حساب</button>
+            <button class="founder-btn edit" onclick="editShares(${i})">تعديل</button>
+            <button class="founder-btn del" onclick="delFounder(${i})">حذف</button>
+          </td>
+        </tr>
+        `).join("") }
+      </table>
+    </div>
+    <div id="owner-statement-block"></div>
+  `;
+}
+function showAddProfit(){
+  let amount = prompt('المبلغ الكلي للأرباح:');
+  amount = Number(amount);
+  if(!amount||amount<1) return;
+  totalProfit += amount;
+  founders.forEach(f=>{
+    let share = Math.floor((f.shares/TOTAL_SHARES)*amount);
+    f.profit = (f.profit||0) + share;
+  });
+  saveAll();
+  renderOwnerDashboard();
+}
+function showFounderStatement(idx){
+  let f = founders[idx];
+  let html = `<div class="founder-statement" style="margin:22px 0;">
+    <button class="close-btn" onclick="document.getElementById('owner-statement-block').innerHTML=''">×</button>
+    <div class="title">كشف حساب المؤسس: ${f.name}</div>
+    <div class="stat">الإيميل: ${f.email}</div>
+    <div class="stat">عدد الأسهم: ${f.shares} سهم</div>
+    <div class="stat">النسبة: ${((f.shares/TOTAL_SHARES)*100).toFixed(4)}%</div>
+    <div class="stat">إجمالي الأرباح: ${f.profit||0} ر.س</div>
+    <div class="stat">إجمالي المصروفات: ${sumArr(f.expenses)} ر.س</div>
+    <div class="stat">إجمالي السحوبات: ${sumArr(f.withdraws)} ر.س</div>
+    <div style="margin-top:8px;font-weight:bold;">المصروفات:</div>
+    <table>
+      <tr><th>التاريخ</th><th>المبلغ</th><th>ملاحظة</th></tr>
+      ${(f.expenses&&f.expenses.length)?f.expenses.map(e=>`<tr><td>${e.date}</td><td>${e.amount}</td><td>${e.note||'-'}</td></tr>`).join(''):'<tr><td colspan="3">لا يوجد مصروفات</td></tr>'}
+    </table>
+    <div style="margin-top:8px;font-weight:bold;">السحوبات:</div>
+    <table>
+      <tr><th>التاريخ</th><th>المبلغ</th><th>ملاحظة</th></tr>
+      ${(f.withdraws&&f.withdraws.length)?f.withdraws.map(e=>`<tr><td>${e.date}</td><td>${e.amount}</td><td>${e.note||'-'}</td></tr>`).join(''):'<tr><td colspan="3">لا يوجد سحوبات</td></tr>'}
+    </table>
+    <button class="founder-btn" onclick="addExpense(${idx})">إضافة مصروف</button>
+    <button class="founder-btn" onclick="addWithdraw(${idx})">إضافة سحب</button>
+  </div>`;
+  document.getElementById('owner-statement-block').innerHTML = html;
+}
+function addExpense(idx){
+  let amount = Number(prompt("المبلغ:"));
+  if(!amount||amount<1) return alert("المبلغ غير صحيح");
+  let note = prompt("ملاحظة:")||"";
+  let date = new Date().toISOString().slice(0,10);
+  founders[idx].expenses = founders[idx].expenses||[];
+  founders[idx].expenses.push({date,amount,note});
+  saveAll();
+  showFounderStatement(idx);
+}
+function addWithdraw(idx){
+  let amount = Number(prompt("المبلغ:"));
+  if(!amount||amount<1) return alert("المبلغ غير صحيح");
+  let note = prompt("ملاحظة:")||"";
+  let date = new Date().toISOString().slice(0,10);
+  founders[idx].withdraws = founders[idx].withdraws||[];
+  founders[idx].withdraws.push({date,amount,note});
+  saveAll();
+  showFounderStatement(idx);
+}
+function editShares(idx){
+  let shares = Number(prompt("عدد الأسهم الجديد:", founders[idx].shares));
+  if(!shares || shares<1) return;
+  founders[idx].shares = shares;
+  saveAll();
+  renderOwnerDashboard();
+}
+function delFounder(idx){
+  if(!confirm("سيتم حذف المؤسس نهائياً!")) return;
+  founders.splice(idx,1);
+  saveAll();
+  renderOwnerDashboard();
+}
+function sumArr(arr){return (arr||[]).reduce((a,e)=>a+Number(e.amount||0),0);}
+// ========== باقي التبويبات ==========
+function renderUsersTable(){renderOwnerDashboard();}
+function renderTransactions(){
+  let t = `<div class="table-block">
+  <div style="font-weight:bold;color:#820000;font-size:1.12rem;margin-bottom:10px;">سحوبات المؤسسين</div>
+  <table><tr><th>المؤسس</th><th>المبلغ</th><th>التاريخ</th><th>ملاحظة</th></tr>`;
+  founders.forEach((f,i)=>{
+    if(f.withdraws && f.withdraws.length){
+      f.withdraws.forEach(w=>{
+        t+=`<tr><td>${f.name}</td><td>${w.amount}</td><td>${w.date}</td><td>${w.note||'-'}</td></tr>`;
+      });
+    }
+  });
+  t+='</table></div>';
+  document.getElementById('owner-content').innerHTML = t;
+}
+function renderReports(){
+  document.getElementById('owner-content').innerHTML = `
+    <div style="font-weight:bold;color:#820000;font-size:1.20rem;margin-bottom:10px;">التقارير</div>
+    <textarea id="report-text" rows="7" style="width:98%;max-width:700px;border-radius:10px;border:1.2px solid #820000;padding:12px;font-size:1.09rem;"></textarea><br>
+    <button class="card add-btn" style="width:auto;margin-top:13px;" onclick="sendReport()">إرسال لجميع المؤسسين</button>
+    <div id="report-status" style="margin-top:10px;color:#1976d2;"></div>
+  `;
+}
+function sendReport(){
+  let txt = document.getElementById('report-text').value.trim();
+  if(!txt) return alert("يرجى كتابة التقرير أولاً");
+  document.getElementById('report-status').textContent = "تم إرسال التقرير لجميع المؤسسين (تجريبي)";
+}
+// ========== ملفي الشخصي ==========
+function showProfile(){
+  document.getElementById('profile-modal-bg').classList.remove('hidden');
+  // avatar
+  let preview = document.getElementById('profile-avatar-preview');
+  preview.style.backgroundImage = "";
+  preview.innerHTML = "";
+  document.getElementById('profile-avatar').value="";
+  if(currentUser.type==='owner'){
+    document.getElementById('profile-name').value = owner.name||"";
+    document.getElementById('profile-email').value = owner.email||"";
+    document.getElementById('profile-phone').value = owner.phone||"";
+    document.getElementById('profile-address').value = owner.address||"";
+    if(owner.avatar && owner.avatar.startsWith("data:")){
+      preview.style.backgroundImage = `url('${owner.avatar}')`;
+    }else{
+      preview.innerHTML = owner.name[0]||"م";
+    }
+  }else{
+    let f = founders[currentUser.index];
+    document.getElementById('profile-name').value = f.name||"";
+    document.getElementById('profile-email').value = f.email||"";
+    document.getElementById('profile-phone').value = f.phone||"";
+    document.getElementById('profile-address').value = f.address||"";
+    if(f.avatar && f.avatar.startsWith("data:")){
+      preview.style.backgroundImage = `url('${f.avatar}')`;
+    }else{
+      preview.innerHTML = f.name[0]||"م";
+    }
+  }
+  document.getElementById('profile-pass').value = "";
+}
+document.getElementById('profile-avatar').onchange = function(){
+  if(this.files && this.files[0]){
+    let reader = new FileReader();
+    reader.onload = function(e){
+      document.getElementById('profile-avatar-preview').style.backgroundImage = `url('${e.target.result}')`;
+      document.getElementById('profile-avatar-preview').innerHTML = "";
+      document.getElementById('profile-avatar-preview').setAttribute('data-img',e.target.result);
+    };
+    reader.readAsDataURL(this.files[0]);
+  }
+};
+function hideProfile(){
+  document.getElementById('profile-modal-bg').classList.add('hidden');
+}
+document.getElementById('profile-form').onsubmit = function(e){
+  e.preventDefault();
+  let name = document.getElementById('profile-name').value.trim();
+  let email = document.getElementById('profile-email').value.trim();
+  let phone = document.getElementById('profile-phone').value.trim();
+  let address = document.getElementById('profile-address').value.trim();
+  let pass = document.getElementById('profile-pass').value;
+  let avatarImg = document.getElementById('profile-avatar-preview').getAttribute('data-img');
+  if(currentUser.type==='owner'){
+    owner.name=name;owner.email=email;owner.phone=phone;owner.address=address;
+    if(pass) owner.password=pass;
+    if(avatarImg) owner.avatar=avatarImg;
+    saveAll();
+    renderOwnerHeader();
+    alert("تم تحديث بيانات المالك");
+  }else{
+    let f = founders[currentUser.index];
+    f.name=name;f.email=email;f.phone=phone;f.address=address;
+    if(pass) f.password=pass;
+    if(avatarImg) f.avatar=avatarImg;
+    saveAll();
+    renderFounderHeader(currentUser.index);
+    renderFounderDashboard(currentUser.index);
+    alert("تم تحديث بيانات المؤسس");
+  }
+  hideProfile();
+  // إزالة الداتا بعد الحفظ
+  document.getElementById('profile-avatar-preview').removeAttribute('data-img');
+};
+// ========== واجهة المؤسس ==========
+function renderFounderHeader(idx){
+  let f = founders[idx];
+  document.getElementById('founder-center-title').textContent = f.name;
+  setAvatar("founder-avatar", f.avatar, f.name);
+}
+function renderFounderDashboard(idx){
+  let f = founders[idx];
+  let html = `
+    <div class="cards-row-founder" style="margin-top:32px;">
+      <div class="card"><div class="label">عدد الأسهم</div><div class="value">${f.shares} سهم</div></div>
+      <div class="card"><div class="label">نسبتك</div><div class="value">${((f.shares/TOTAL_SHARES)*100).toFixed(4)}%</div></div>
+      <div class="card"><div class="label">أرباحك الحالية</div><div class="value">${f.profit||0} ر.س</div></div>
+      <div class="card"><div class="label">إجمالي المصروفات</div><div class="value">${sumArr(f.expenses)} ر.س</div></div>
+      <div class="card"><div class="label">إجمالي السحوبات</div><div class="value">${sumArr(f.withdraws)} ر.س</div></div>
+    </div>
+    <div class="table-block" style="max-width:600px;margin-top:23px;">
+      <div style="font-weight:bold;color:#820000;font-size:1.12rem;margin-bottom:10px;">كشف حسابك التفصيلي</div>
+      <table>
+        <tr><th>نوع العملية</th><th>التاريخ</th><th>المبلغ</th><th>ملاحظة</th></tr>
+        ${(f.expenses||[]).map(e=>`<tr><td>مصروف</td><td>${e.date}</td><td>${e.amount}</td><td>${e.note||'-'}</td></tr>`).join('')}
+        ${(f.withdraws||[]).map(e=>`<tr><td>سحب</td><td>${e.date}</td><td>${e.amount}</td><td>${e.note||'-'}</td></tr>`).join('')}
+      </table>
+    </div>
+  `;
+  document.getElementById('founder-content').innerHTML = html;
+}
+</script>
+</body>
+</html>
